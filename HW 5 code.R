@@ -84,11 +84,10 @@ info <- read.csv("EssentiaOutput/EssentiaModelOutput.csv")%>%
 
 ######step 4
 #step 4 part 1
-lyrics <- read_csv("LIWCOutput/LIWCOutput.csv")
+lyrics <- read_csv("LIWCOutput/LIWCOutput.csv") |>
 
 #step 4 part 2
-merged.two <- merge(lyrics, info, by=c("artist", "album", "track"))
-merged <- merge(merged.two, frame, by=c("artist", "album", "track"))
+merged.two <- merge(. , info, by=c("artist", "album", "track"))|>
+merged <- merge(., frame, by=c("artist", "album", "track"))%>%
+  colnames() == "function" <- "funct"
 
-#step 4 part 3
-colnames(merged)[colnames(merged) == "function"] <- "funct"
