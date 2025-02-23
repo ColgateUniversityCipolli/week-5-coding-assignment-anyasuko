@@ -7,12 +7,11 @@ library(jsonlite)
 
 ######step 1
 #step 1 part 1
-current.filename <- "The Front Bottoms-Talon Of The Hawk-Au Revoir (Adios).json"
-
-#step 1 part 2
-artist <- str_split(current.filename, "-")[[1]][1]
-track <-str_split(current.filename, "-")[[1]][2]
-filename <-str_sub(str_split(current.filename, "-")[[1]][3],,-6)
+current.filename <- "The Front Bottoms-Talon Of The Hawk-Au Revoir (Adios).json"|>
+  split <- str_split(., "-")
+artist <- split[[1]][1]
+track <-split[[1]][2]
+filename <-str_sub(split[[1]][3],,-6)
 
 #step 1 part 3
 data <- fromJSON("EssentiaOutput/The Front Bottoms-Talon Of The Hawk-Au Revoir (Adios).json")
@@ -36,7 +35,7 @@ clean <- function(data){
 
 ###### Step 2
 list.of.filenames <- list.files("EssentiaOutput")%>%
-list.of.filenames <- -which(endsWith(list.of.filenames, '.csv'))
+  -which(endsWith('.csv'))
 
 frame <- data.frame(overall.loudness = rep(x=NA, times=length(list.of.filenames)),
                     spectral.energy = rep(x=NA, times=length(list.of.filenames)),
@@ -51,14 +50,13 @@ frame <- data.frame(overall.loudness = rep(x=NA, times=length(list.of.filenames)
                     track = rep(x=NA, times=length(list.of.filenames)))
 
 for (i in 1:length(list.of.filenames)){
-  # read the ith file
+  split = str_split(list.of.filenames[i], "-", simplify=TRUE)
   to.sort <- fromJSON(paste0("EssentiaOutput/",list.of.filenames[i])) %>%
     clean() %>%
     mutuate(
-      curr.artist = str_split(list.of.filenames[i], "-", simplify=TRUE)[1],
-      curr.album = str_split(list.of.filenames[i], "-", simplify=TRUE)[2],
-      curr.track = str_sub(str_split(list.of.filenames[i], "-", simplify=TRUE)[3], end=-6) 
-      
+      curr.artist = split[1],
+      curr.album = split[2],
+      curr.track = str_sub(split[3], end=-6) 
     )|>
   frame[i,] <- .
 }
