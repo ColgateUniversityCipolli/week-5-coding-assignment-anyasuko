@@ -1,0 +1,171 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage[margin=1.0in]{geometry} % To set margins
+\usepackage{amsmath}  % This allows me to use the align functionality.
+                      % If you find yourself trying to replicate
+                      % something you found online, ensure you're
+                      % loading the necessary packages!
+\usepackage{amsfonts} % Math font
+\usepackage{fancyvrb}
+\usepackage{hyperref} % For including hyperlinks
+\usepackage[shortlabels]{enumitem}% For enumerated lists with labels specified
+                                  % We had to run tlmgr_install("enumitem") in R
+\usepackage{float}    % For telling R where to put a table/figure
+\usepackage{natbib}        %For the bibliography
+\bibliographystyle{apalike}%For the bibliography
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+\begin{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% QUESTION 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item In Lab 3, you wrangled data from Essentia, Essentia models and LIWC. Rework your 
+solution to Lab 3 using \texttt{tidyverse} \citep{tidyverse} instead of base \texttt{R}.
+Specifically, rewrite your code for steps 1-4 of task 2 using \texttt{tidyverse} \citep{tidyverse}. 
+Make sure to address any issues I noted in your code file, and ensure that your code 
+runs in the directory as it is set up.
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Code to run here.}
+\hlkwd{library}\hldef{(tidyverse)}
+\hlkwd{library}\hldef{(stringr)}
+\hlkwd{library}\hldef{(jsonlite)}
+
+\hlcom{######step 1}
+\hlcom{#step 1 part 1}
+\hldef{current.filename} \hlkwb{<-} \hlsng{"The Front Bottoms-Talon Of The Hawk-Au Revoir (Adios).json"}
+\hldef{split} \hlkwb{<-} \hldef{current.filename} \hlopt{%>%} \hlkwd{str_split}\hldef{(}\hlsng{"-"}\hldef{)}
+\hldef{artist} \hlkwb{<-} \hldef{split[[}\hlnum{1}\hldef{]][}\hlnum{1}\hldef{]}
+\hldef{track} \hlkwb{<-}\hldef{split[[}\hlnum{1}\hldef{]][}\hlnum{2}\hldef{]}
+\hldef{filename} \hlkwb{<-}\hlkwd{str_sub}\hldef{(split[[}\hlnum{1}\hldef{]][}\hlnum{3}\hldef{],,}\hlopt{-}\hlnum{6}\hldef{)}
+
+\hlcom{#step 1 part 3}
+\hldef{data} \hlkwb{<-} \hlkwd{fromJSON}\hldef{(}\hlsng{"EssentiaOutput/The Front Bottoms-Talon Of The Hawk-Au Revoir (Adios).json"}\hldef{)}
+
+\hlcom{#step 1 part 4}
+\hldef{clean} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{data}\hldef{)\{}
+  \hldef{overall.loudness} \hlkwb{=} \hldef{data}\hlopt{$}\hldef{lowlevel}\hlopt{$}\hldef{loudness_ebu128}\hlopt{$}\hldef{integrated}
+  \hldef{spectral.energy} \hlkwb{=} \hldef{data}\hlopt{$}\hldef{lowlevel}\hlopt{$}\hldef{spectral_energy}\hlopt{$}\hldef{mean}
+  \hldef{dissonance} \hlkwb{=} \hldef{data}\hlopt{$}\hldef{lowlevel}\hlopt{$}\hldef{dissonance}\hlopt{$}\hldef{mean}
+  \hldef{pitch.salience} \hlkwb{=} \hldef{data}\hlopt{$}\hldef{lowlevel}\hlopt{$}\hldef{pitch_salience}\hlopt{$}\hldef{mean}
+  \hldef{bpm} \hlkwb{=} \hldef{data}\hlopt{$}\hldef{rhythm}\hlopt{$}\hldef{bpm}
+  \hldef{beats.loudness} \hlkwb{=} \hldef{data}\hlopt{$}\hldef{rhythm}\hlopt{$}\hldef{beats_loudness}\hlopt{$}\hldef{mean}
+  \hldef{danceability} \hlkwb{=} \hldef{data}\hlopt{$}\hldef{rhythm}\hlopt{$}\hldef{danceability}
+  \hldef{tuning.frequency} \hlkwb{=} \hldef{data}\hlopt{$}\hldef{tonal}\hlopt{$}\hldef{tuning_frequency}
+
+
+  \hldef{to.return} \hlkwb{<-} \hlkwd{data.frame}\hldef{(overall.loudness, spectral.energy, dissonance, pitch.salience, bpm, beats.loudness, danceability, tuning.frequency)}
+\hldef{\}}
+
+\hlcom{###### Step 2}
+\hldef{list.of.filenames} \hlkwb{<-} \hlkwd{list.files}\hldef{(}\hlsng{"EssentiaOutput"}\hldef{)}\hlopt{%>%}
+  \hldef{.[}\hlopt{!}\hlkwd{endsWith}\hldef{(.,} \hlsng{".csv"}\hldef{)]}
+
+\hldef{frame} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{overall.loudness} \hldef{=} \hlkwd{rep}\hldef{(}\hlkwc{x}\hldef{=}\hlnum{NA}\hldef{,} \hlkwc{times}\hldef{=}\hlkwd{length}\hldef{(list.of.filenames)),}
+                    \hlkwc{spectral.energy} \hldef{=} \hlkwd{rep}\hldef{(}\hlkwc{x}\hldef{=}\hlnum{NA}\hldef{,} \hlkwc{times}\hldef{=}\hlkwd{length}\hldef{(list.of.filenames)),}
+                    \hlkwc{dissonance} \hldef{=} \hlkwd{rep}\hldef{(}\hlkwc{x}\hldef{=}\hlnum{NA}\hldef{,} \hlkwc{times}\hldef{=}\hlkwd{length}\hldef{(list.of.filenames)),}
+                    \hlkwc{pitch.salience} \hldef{=} \hlkwd{rep}\hldef{(}\hlkwc{x}\hldef{=}\hlnum{NA}\hldef{,} \hlkwc{times}\hldef{=}\hlkwd{length}\hldef{(list.of.filenames)),}
+                    \hlkwc{bpm} \hldef{=} \hlkwd{rep}\hldef{(}\hlkwc{x}\hldef{=}\hlnum{NA}\hldef{,} \hlkwc{times}\hldef{=}\hlkwd{length}\hldef{(list.of.filenames)),}
+                    \hlkwc{beats.loudness} \hldef{=} \hlkwd{rep}\hldef{(}\hlkwc{x}\hldef{=}\hlnum{NA}\hldef{,} \hlkwc{times}\hldef{=}\hlkwd{length}\hldef{(list.of.filenames)),}
+                    \hlkwc{danceability} \hldef{=} \hlkwd{rep}\hldef{(}\hlkwc{x}\hldef{=}\hlnum{NA}\hldef{,} \hlkwc{times}\hldef{=}\hlkwd{length}\hldef{(list.of.filenames)),}
+                    \hlkwc{tuning.frequency} \hldef{=} \hlkwd{rep}\hldef{(}\hlkwc{x}\hldef{=}\hlnum{NA}\hldef{,} \hlkwc{times}\hldef{=}\hlkwd{length}\hldef{(list.of.filenames)),}
+                    \hlkwc{artist} \hldef{=} \hlkwd{rep}\hldef{(}\hlkwc{x}\hldef{=}\hlnum{NA}\hldef{,} \hlkwc{times}\hldef{=}\hlkwd{length}\hldef{(list.of.filenames)),}
+                    \hlkwc{album} \hldef{=} \hlkwd{rep}\hldef{(}\hlkwc{x}\hldef{=}\hlnum{NA}\hldef{,} \hlkwc{times}\hldef{=}\hlkwd{length}\hldef{(list.of.filenames)),}
+                    \hlkwc{track} \hldef{=} \hlkwd{rep}\hldef{(}\hlkwc{x}\hldef{=}\hlnum{NA}\hldef{,} \hlkwc{times}\hldef{=}\hlkwd{length}\hldef{(list.of.filenames)))}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(list.of.filenames))\{}
+  \hldef{split} \hlkwb{=} \hlkwd{str_split}\hldef{(list.of.filenames[i],} \hlsng{"-"}\hldef{,} \hlkwc{simplify}\hldef{=}\hlnum{TRUE}\hldef{)}
+  \hldef{to.sort} \hlkwb{<-} \hlkwd{fromJSON}\hldef{(}\hlkwd{paste0}\hldef{(}\hlsng{"EssentiaOutput/"}\hldef{,list.of.filenames[i]))} \hlopt{%>%}
+    \hlkwd{clean}\hldef{()} \hlopt{%>%}
+    \hlkwd{mutate}\hldef{(}
+      \hlkwc{curr.artist} \hldef{= split[}\hlnum{1}\hldef{],}
+      \hlkwc{curr.album} \hldef{= split[}\hlnum{2}\hldef{],}
+      \hlkwc{curr.track} \hldef{=} \hlkwd{str_sub}\hldef{(split[}\hlnum{3}\hldef{],} \hlkwc{end}\hldef{=}\hlopt{-}\hlnum{6}\hldef{)}
+    \hldef{)}
+  \hldef{frame[i,]} \hlkwb{<-} \hldef{to.sort}
+\hldef{\}}
+
+\hlcom{######step 3}
+\hlcom{#step 3 part 1}
+\hldef{info} \hlkwb{<-} \hlkwd{read.csv}\hldef{(}\hlsng{"EssentiaOutput/EssentiaModelOutput.csv"}\hldef{)}\hlopt{%>%}
+  \hlkwd{mutate}\hldef{(}
+    \hlkwc{valence} \hldef{=} \hlkwd{rowMeans}\hldef{(.[,}\hlkwd{c}\hldef{(}\hlsng{"deam_valence"}\hldef{,} \hlsng{"emo_valence"}\hldef{,} \hlsng{"muse_valence"}\hldef{)],} \hlkwc{na.rm}\hldef{=}\hlnum{TRUE}\hldef{),}
+    \hlkwc{arousal} \hldef{=} \hlkwd{rowMeans}\hldef{(.[,}\hlkwd{c}\hldef{(}\hlsng{"deam_arousal"}\hldef{,} \hlsng{"emo_arousal"}\hldef{,} \hlsng{"muse_arousal"}\hldef{)],} \hlkwc{na.rm}\hldef{=}\hlnum{TRUE}\hldef{),}
+    \hlkwc{aggressive} \hldef{=}\hlkwd{rowMeans}\hldef{(.[,}\hlkwd{c}\hldef{(}\hlsng{"eff_aggressive"}\hldef{,}\hlsng{"nn_aggressive"}\hldef{)],} \hlkwc{na.rm}\hldef{=}\hlnum{TRUE}\hldef{),}
+    \hlkwc{happy} \hldef{=}\hlkwd{rowMeans}\hldef{(.[,}\hlkwd{c}\hldef{(}\hlsng{"eff_happy"}\hldef{,}\hlsng{"nn_happy"}\hldef{)],} \hlkwc{na.rm}\hldef{=}\hlnum{TRUE}\hldef{),}
+    \hlkwc{party} \hldef{=}\hlkwd{rowMeans}\hldef{(.[,}\hlkwd{c}\hldef{(}\hlsng{"eff_party"}\hldef{,}\hlsng{"nn_party"}\hldef{)],} \hlkwc{na.rm}\hldef{=}\hlnum{TRUE}\hldef{),}
+    \hlkwc{relaxed} \hldef{=}\hlkwd{rowMeans}\hldef{(.[,}\hlkwd{c}\hldef{(}\hlsng{"eff_relax"}\hldef{,}\hlsng{"nn_relax"}\hldef{)],} \hlkwc{na.rm}\hldef{=}\hlnum{TRUE}\hldef{),}
+    \hlkwc{sad} \hldef{=}\hlkwd{rowMeans}\hldef{(.[,}\hlkwd{c}\hldef{(}\hlsng{"eff_sad"}\hldef{,}\hlsng{"nn_sad"}\hldef{)],} \hlkwc{na.rm}\hldef{=}\hlnum{TRUE}\hldef{),}
+    \hlkwc{acoustic} \hldef{=}\hlkwd{rowMeans}\hldef{(.[,}\hlkwd{c}\hldef{(}\hlsng{"eff_acoustic"}\hldef{,}\hlsng{"nn_acoustic"}\hldef{)],} \hlkwc{na.rm}\hldef{=}\hlnum{TRUE}\hldef{),}
+    \hlkwc{electric} \hldef{=}\hlkwd{rowMeans}\hldef{(.[,}\hlkwd{c}\hldef{(}\hlsng{"eff_electronic"}\hldef{,}\hlsng{"nn_electronic"}\hldef{)],} \hlkwc{na.rm}\hldef{=}\hlnum{TRUE}\hldef{),}
+    \hlkwc{instrumental} \hldef{=}\hlkwd{rowMeans}\hldef{(.[,}\hlkwd{c}\hldef{(}\hlsng{"eff_instrumental"}\hldef{,}\hlsng{"nn_instrumental"}\hldef{)],} \hlkwc{na.rm}\hldef{=}\hlnum{TRUE}\hldef{)}
+  \hldef{)}\hlopt{%>%}
+  \hlkwd{rename}\hldef{(}\hlkwc{timbreBright} \hldef{= eff_timbre_bright)} \hlopt{%>%}
+  \hlkwd{select}\hldef{(artist,album,track,valence,arousal,aggressive,happy,party,relaxed,sad,acoustic,electric,instrumental,timbreBright)}
+
+\hlcom{######step 4}
+\hlcom{#step 4 part 1}
+\hldef{lyrics} \hlkwb{<-} \hlkwd{read_csv}\hldef{(}\hlsng{"LIWCOutput/LIWCOutput.csv"}\hldef{)}
+
+\hldef{merged} \hlkwb{<-} \hldef{lyrics|>}
+  \hlkwd{merge}\hldef{(info,} \hlkwc{by} \hldef{=} \hlkwd{c}\hldef{(}\hlsng{"artist"}\hldef{,} \hlsng{"album"}\hldef{,} \hlsng{"track"}\hldef{))|>}
+  \hlkwd{merge}\hldef{(frame,} \hlkwc{by} \hldef{=} \hlkwd{c}\hldef{(}\hlsng{"artist"}\hldef{,} \hlsng{"album"}\hldef{,} \hlsng{"track"}\hldef{))}\hlopt{%>%}
+  \hlkwd{rename}\hldef{(,} \hlsng{"funct"}\hldef{=}\hlsng{"function"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{enumerate}
+\bibliography{bibliography}
+\end{document}

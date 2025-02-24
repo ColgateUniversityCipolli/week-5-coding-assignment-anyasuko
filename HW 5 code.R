@@ -18,17 +18,15 @@ data <- fromJSON("EssentiaOutput/The Front Bottoms-Talon Of The Hawk-Au Revoir (
 
 #step 1 part 4
 clean <- function(data){
-  data %>%
-    with(
-      overall.loudness <- lowlevel$loudness_ebu128$integrated,
-      spectral.energy <- lowlevel$spectral_energy$mean,
-      dissonance <- lowlevel$dissonance$mean,
-      pitch.salience <- lowlevel$pitch_salience$mean,
-      bpm <- rhythm$bpm,
-      beats.loudness <- rhythm$beats_loudness$mean,
-      danceability <- rhythm$danceability,
-      tuning.frequency <- tonal$tuning_frequency
-    )
+  overall.loudness = data$lowlevel$loudness_ebu128$integrated
+  spectral.energy = data$lowlevel$spectral_energy$mean
+  dissonance = data$lowlevel$dissonance$mean
+  pitch.salience = data$lowlevel$pitch_salience$mean
+  bpm = data$rhythm$bpm
+  beats.loudness = data$rhythm$beats_loudness$mean
+  danceability = data$rhythm$danceability
+  tuning.frequency = data$tonal$tuning_frequency
+  
   
   to.return <- data.frame(overall.loudness, spectral.energy, dissonance, pitch.salience, bpm, beats.loudness, danceability, tuning.frequency)
 }
@@ -65,28 +63,25 @@ for (i in 1:length(list.of.filenames)){
 #step 3 part 1
 info <- read.csv("EssentiaOutput/EssentiaModelOutput.csv")%>%
   mutate(
-    valence <- rowMeans(.[,c("deam_valence", "emo_valence", "muse_valence")], na.rm=TRUE),
-    arousal <- rowMeans(.[,c("deam_arousal", "emo_arousal", "muse_arousal")], na.rm=TRUE),
-    aggressive <-rowMeans(.[,c("eff_aggressive","nn_aggressive")], na.rm=TRUE),
-    happy <-rowMeans(.[,c("eff_happy","nn_happy")], na.rm=TRUE),
-    party <-rowMeans(.[,c("eff_party","nn_party")], na.rm=TRUE),
-    relaxed <-rowMeans(.[,c("eff_relax","nn_relax")], na.rm=TRUE),
-    sad <-rowMeans(.[,c("eff_sad","nn_sad")], na.rm=TRUE),
-    acoustic <-rowMeans(.[,c("eff_acoustic","nn_acoustic")], na.rm=TRUE),
-    electric <-rowMeans(.[,c("eff_electronic","nn_electronic")], na.rm=TRUE),
-    instrumental <-rowMeans(.[,c("eff_instrumental","nn_instrumental")], na.rm=TRUE)
+    valence = rowMeans(.[,c("deam_valence", "emo_valence", "muse_valence")], na.rm=TRUE),
+    arousal = rowMeans(.[,c("deam_arousal", "emo_arousal", "muse_arousal")], na.rm=TRUE),
+    aggressive =rowMeans(.[,c("eff_aggressive","nn_aggressive")], na.rm=TRUE),
+    happy =rowMeans(.[,c("eff_happy","nn_happy")], na.rm=TRUE),
+    party =rowMeans(.[,c("eff_party","nn_party")], na.rm=TRUE),
+    relaxed =rowMeans(.[,c("eff_relax","nn_relax")], na.rm=TRUE),
+    sad =rowMeans(.[,c("eff_sad","nn_sad")], na.rm=TRUE),
+    acoustic =rowMeans(.[,c("eff_acoustic","nn_acoustic")], na.rm=TRUE),
+    electric =rowMeans(.[,c("eff_electronic","nn_electronic")], na.rm=TRUE),
+    instrumental =rowMeans(.[,c("eff_instrumental","nn_instrumental")], na.rm=TRUE)
   )%>%
   rename(timbreBright = eff_timbre_bright) %>%
-  select(artist,album,track,valence,arousal,aggressive,happy,party,relaxed,sad,acoustic,electric,intstrumental,timbreBright)
+  select(artist,album,track,valence,arousal,aggressive,happy,party,relaxed,sad,acoustic,electric,instrumental,timbreBright)
 
 ######step 4
 #step 4 part 1
 lyrics <- read_csv("LIWCOutput/LIWCOutput.csv")
 
-merged<- lyrics|>
+merged <- lyrics|>
   merge(info, by = c("artist", "album", "track"))|>
-  merge(frame, by = c("artist", "album", "track"))|>
-  {
-    colnames(.)[colnames(.)=="function"]<- "funct"
-    .
-  }
+  merge(frame, by = c("artist", "album", "track"))%>%
+  rename(, "funct"="function")
